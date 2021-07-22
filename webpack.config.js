@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 module.exports = function (_env, argv) {
@@ -41,8 +42,11 @@ module.exports = function (_env, argv) {
           ),
         }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "index.html"),
+        template: path.resolve(__dirname, "public/index.html"),
         inject: true,
+      }),
+      new CopyPlugin({
+        patterns: [{ from: "public/config", to: "config" }],
       }),
     ].filter(Boolean),
     optimization: {
