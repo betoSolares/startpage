@@ -2,5 +2,6 @@
   "background": "#FEFEFE",
   "foreground": "#232323",
   "radius": 0,
-  "items": 6
+  "width": 300,
+  "height": 200
 }

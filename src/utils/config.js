@@ -16,8 +16,9 @@ const clearConfig = (config) => {
   return {
     background: validate(hexColor, config.background, "#FEFEFE"),
     foreground: validate(hexColor, config.foreground, "#232323"),
+    height: validate(regularNumber, config.height, 200),
     radius: validate(regularNumber, config.radius, 0),
-    items: validate(regularNumber, config.items, 6),
+    width: validate(regularNumber, config.width, 200),
   };
 };
 

@@ -46,7 +46,10 @@ module.exports = function (_env, argv) {
         inject: true,
       }),
       new CopyPlugin({
-        patterns: [{ from: "public/config", to: "config" }],
+        patterns: [
+          { from: "public/config", to: "config" },
+          { from: "public/images", to: "images" },
+        ],
       }),
     ].filter(Boolean),
     optimization: {
