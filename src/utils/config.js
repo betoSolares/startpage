@@ -25,7 +25,7 @@ const clearConfig = (config) => {
 const getConfig = async () => {
   const res = await httpRequest("config/config.json");
 
-  if (res.status !== 200) {
+  if (res.status !== 200 && res.status !== 0) {
     return clearConfig({});
   }
 

@@ -62,7 +62,7 @@ const clearStore = (store) => {
 const getStore = async () => {
   const res = await httpRequest("config/store.json");
 
-  if (res.status !== 200) {
+  if (res.status !== 200 && res.status !== 0) {
     return [];
   }
 

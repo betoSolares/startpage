@@ -64,11 +64,13 @@ const App = () => {
     const directory = store[idx];
     setItems(directory.items);
     setDirectory(true);
+    window.scrollTo(0, 0);
   };
 
   const exitDirectory = () => {
     setItems(store);
     setDirectory(false);
+    window.scrollTo(0, 0);
   };
 
   return (

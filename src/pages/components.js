@@ -17,6 +17,7 @@ export const Grid = styled.section`
     minmax(${({ width }) => `${width}px, ${width}px`})
   );
   justify-content: center;
+  padding-top: 20px;
 `;
 
 export const Text = styled.div`
@@ -54,6 +55,7 @@ export const Image = styled.div`
   background-repeat: no-repeat;
   background-size: contain;
   border-radius: ${({ radius }) => radius}px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   height: 75%;
   width: 100%;
 `;
