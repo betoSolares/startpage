@@ -34,6 +34,7 @@ export const Content = styled.p`
 
 export const Item = styled.div`
   color: ${({ color }) => color};
+  cursor: pointer;
   height: 100%;
   width: 100%;
   overflow: hidden;
