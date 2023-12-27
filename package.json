@@ -5,6 +5,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "ci": "next lint",
     "build": "next build",
     "dev": "next dev",
     "lint": "prettier --write --ignore-path .gitignore . && next lint",
