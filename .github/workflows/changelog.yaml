@@ -14,6 +14,10 @@ jobs:
     name: Generate changelog for master branch
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
 
       - name: Extract branch name
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
@@ -25,10 +29,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v9
+        uses: actions-js/push@master
         with:
-          author_name: github-actions[bot]
-          author_email: github-actions[bot]@users.noreply.github.com
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          author_name: 'github-actions[bot]'
+          author_email: 'github-actions[bot]@users.noreply.github.com'
           message: 'docs: updated CHANGELOG.md'
-          add: 'CHANGELOG.md'
-          push: origin ${{ steps.extract_branch.outputs.branch }} --force
+          branch: origin ${{ steps.extract_branch.outputs.branch }} --force
