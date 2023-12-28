@@ -38,6 +38,6 @@ jobs:
         env:
           CI_USER: ${{ secrets.GH_USER }}
           CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_BRANCH: eng:${{ steps.extract_branch.outputs.branch }}
+          CI_BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
-          git push "https://$CI_USER:$CI_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:$CI_BRANCH
+          git push "https://$CI_USER:$CI_TOKEN@github.com/$GITHUB_REPOSITORY.git" "HEAD:$CI_BRANCH"
