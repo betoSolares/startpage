@@ -1,0 +1,29 @@
+name: Changelog
+
+on:
+  pull_request:
+    branches: [master]
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  generate_changelog:
+    runs-on: ubuntu-latest
+    name: Generate changelog for master branch
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate changelog
+        uses: charmixer/auto-changelog-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: '.'
+          author_name: 'github-actions[bot]'
+          author_email: 'github-actions[bot]@users.noreply.github.com'
+          message: 'docs: updated CHANGELOG.md'
