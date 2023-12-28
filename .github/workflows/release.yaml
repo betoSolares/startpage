@@ -1,12 +1,14 @@
 name: Release
 
 on:
-  push:
-    branches: [master]
+  pull_request:
+    types: [closed]
 
 jobs:
   create_release:
     runs-on: ubuntu-latest
+
+    if: github.event.pull_request.merged
 
     steps:
       - name: Tag
