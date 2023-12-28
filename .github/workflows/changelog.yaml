@@ -24,20 +24,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit files
-        env:
-          CI_USER: 'github-actions[bot]'
-          CI_EMAIL: 'github-actions[bot]@users.noreply.github.com'
-        run: |
-          git config --local user.email "$CI_EMAIL"
-          git config --local user.name "$CI_USER"
-          git add CHANGELOG.md && git commit -m 'docs: updated CHANGELOG.md' && echo "push=true" >> $GITHUB_ENV || echo "No changes to CHANGELOG.md"
-
-      - name: Push changes
-        if: env.push == 'true'
-        env:
-          CI_USER: ${{ secrets.GH_USER }}
-          CI_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-        run: |
-          git push "https://$CI_USER:$CI_TOKEN@github.com/$GITHUB_REPOSITORY.git" "HEAD:$CI_BRANCH"
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: 'docs: updated CHANGELOG.md'
+          add: 'CHANGELOG.md'
+          push: origin ${{ steps.extract_branch.outputs.branch }} --force
