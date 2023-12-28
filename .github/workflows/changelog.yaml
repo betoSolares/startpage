@@ -11,13 +11,12 @@ on:
 jobs:
   generate_changelog:
     runs-on: ubuntu-latest
-    name: Generate changelog for master branch
+    name: Generate changelog
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: false
-          fetch-depth: 0
-
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Extract branch name
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
@@ -29,10 +28,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes
-        uses: actions-js/push@master
+        uses: EndBug/add-and-commit@v9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          author_name: 'github-actions[bot]'
-          author_email: 'github-actions[bot]@users.noreply.github.com'
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
           message: 'docs: updated CHANGELOG.md'
-          branch: origin ${{ steps.extract_branch.outputs.branch }} --force
+          add: 'CHANGELOG.md'
+          push: origin ${{ steps.extract_branch.outputs.branch }} --set-upstream --force
