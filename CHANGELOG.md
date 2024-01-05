@@ -1,12 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/betoSolares/startpage/tree/HEAD)
+## [v1.0.1](https://github.com/betoSolares/startpage/tree/v1.0.1) (2024-01-05)
 
-[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.0.0...HEAD)
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.0.0...v1.0.1)
 
 **Implemented enhancements:**
 
 - GitHub Actions [\#6](https://github.com/betoSolares/startpage/pull/6) ([betoSolares](https://github.com/betoSolares))
+
+**Fixed bugs:**
+
+- Release GitHub Action [\#7](https://github.com/betoSolares/startpage/pull/7) ([betoSolares](https://github.com/betoSolares))
 
 ## [v1.0.0](https://github.com/betoSolares/startpage/tree/v1.0.0) (2023-12-28)
 
