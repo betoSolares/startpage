@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.1.0](https://github.com/betoSolares/startpage/tree/v1.1.0) (2024-01-05)
+
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.0.1...v1.1.0)
+
+**Implemented enhancements:**
+
+- Vercel GitHub Action [\#8](https://github.com/betoSolares/startpage/pull/8) ([betoSolares](https://github.com/betoSolares))
+
 ## [v1.0.1](https://github.com/betoSolares/startpage/tree/v1.0.1) (2024-01-05)
 
 [Full Changelog](https://github.com/betoSolares/startpage/compare/v1.0.0...v1.0.1)
