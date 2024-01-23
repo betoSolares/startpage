@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.0](https://github.com/betoSolares/startpage/tree/v1.2.0) (2024-01-23)
+
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.1.2...v1.2.0)
+
+**Implemented enhancements:**
+
+- Header [\#11](https://github.com/betoSolares/startpage/pull/11) ([betoSolares](https://github.com/betoSolares))
+
 ## [v1.1.2](https://github.com/betoSolares/startpage/tree/v1.1.2) (2024-01-05)
 
 [Full Changelog](https://github.com/betoSolares/startpage/compare/v1.1.1...v1.1.2)
