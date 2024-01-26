@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils';
 
 const Form = FormProvider;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -63,7 +62,6 @@ const useFormField = () => {
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type FormItemContextValue = {
   id: string;
 };
