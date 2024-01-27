@@ -21,3 +21,11 @@ export const SignUpSchema = z.object({
 export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
 });
+
+export const ResetPasswordSchema = z.object({
+  password: z.string().regex(passwordValidation, {
+    message:
+      'Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character',
+  }),
+  confirmPassword: z.string(),
+});
