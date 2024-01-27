@@ -1,7 +1,7 @@
 import { FormWrapper } from '@/components/auth/form-wrapper';
 import { ResetPasswordForm } from '@/components/auth/reset-password-form';
 
-export default function ForgotPassword() {
+export default function AuthPasswordResetPage() {
   return (
     <FormWrapper
       title='Reset password'

@@ -63,7 +63,7 @@ export function SignInForm() {
           />
         </div>
         <Button variant='link' className='p-0' asChild>
-          <Link href='/auth/forgot-password'>
+          <Link href='/auth/password/forgot'>
             <p className='text-sm'>Forgot password?</p>
           </Link>
         </Button>

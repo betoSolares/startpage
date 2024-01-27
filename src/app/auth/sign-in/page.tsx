@@ -1,7 +1,7 @@
 import { FormWrapper } from '@/components/auth/form-wrapper';
-import { SignInForm } from '@/components/auth/sing-in-form';
+import { SignInForm } from '@/components/auth/sign-in-form';
 
-export default function SignIn() {
+export default function AuthSignInPage() {
   return (
     <FormWrapper
       title='Sign in'

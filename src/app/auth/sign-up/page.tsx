@@ -1,7 +1,7 @@
 import { FormWrapper } from '@/components/auth/form-wrapper';
 import { SignUpForm } from '@/components/auth/sign-up-form';
 
-export default function SignUp() {
+export default function AuthSignUpPage() {
   return (
     <FormWrapper
       title='Sign up'

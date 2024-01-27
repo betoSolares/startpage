@@ -1,7 +1,7 @@
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 import { FormWrapper } from '@/components/auth/form-wrapper';
 
-export default function ForgotPassword() {
+export default function AuthPasswordForgotPage() {
   return (
     <FormWrapper
       title='Forgot password?'
