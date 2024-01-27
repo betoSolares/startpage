@@ -17,3 +17,7 @@ export const SignUpSchema = z.object({
   }),
   confirmPassword: z.string(),
 });
+
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
