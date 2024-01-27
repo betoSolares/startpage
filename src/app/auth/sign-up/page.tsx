@@ -1,4 +1,5 @@
 import { FormWrapper } from '@/components/auth/form-wrapper';
+import { SignUpForm } from '@/components/auth/sign-up-form';
 
 export default function SignUp() {
   return (
@@ -9,7 +10,7 @@ export default function SignUp() {
       footerActionText='Sign in'
       footerDestination='/auth/sign-in'
     >
-      <p>CHILD</p>
+      <SignUpForm />
     </FormWrapper>
   );
 }
