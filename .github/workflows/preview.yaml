@@ -5,13 +5,16 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  release:
-    types:
-      - created
+  push:
+    branches-ignore:
+      - master
 
 jobs:
   create_deployment:
     runs-on: ubuntu-latest
+    environment:
+      name: Preview
+      url: ${{ steps.seturl.outputs.url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -26,4 +29,11 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | tee deploy.log
+
+      - name: Set Preview URL
+        run: echo "url=$(tail -1 deploy.log)">> $GITHUB_OUTPUT
+        id: seturl
+
+      - name: Log Preview URL
+        run: echo "${{ steps.seturl.outputs.url }}"

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.4.0](https://github.com/betoSolares/startpage/tree/v1.4.0) (2024-02-09)
+
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.3.0...v1.4.0)
+
+**Implemented enhancements:**
+
+- Basic UI for authentication [\#13](https://github.com/betoSolares/startpage/pull/13) ([betoSolares](https://github.com/betoSolares))
+
 ## [v1.3.0](https://github.com/betoSolares/startpage/tree/v1.3.0) (2024-01-23)
 
 [Full Changelog](https://github.com/betoSolares/startpage/compare/v1.2.0...v1.3.0)
