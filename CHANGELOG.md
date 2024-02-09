@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.3.0](https://github.com/betoSolares/startpage/tree/v1.3.0) (2024-01-23)
+
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.2.0...v1.3.0)
+
+**Implemented enhancements:**
+
+- Not Found Page [\#12](https://github.com/betoSolares/startpage/pull/12) ([betoSolares](https://github.com/betoSolares))
+
 ## [v1.2.0](https://github.com/betoSolares/startpage/tree/v1.2.0) (2024-01-23)
 
 [Full Changelog](https://github.com/betoSolares/startpage/compare/v1.1.2...v1.2.0)
