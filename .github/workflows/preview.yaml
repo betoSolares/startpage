@@ -5,9 +5,9 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  release:
-    types:
-      - created
+  push:
+    branches-ignore:
+      - master
 
 jobs:
   create_deployment:
