@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.5.0](https://github.com/betoSolares/startpage/tree/v1.5.0) (2024-02-09)
+
+[Full Changelog](https://github.com/betoSolares/startpage/compare/v1.4.0...v1.5.0)
+
+**Fixed bugs:**
+
+- Fix Vercel Preview Release [\#14](https://github.com/betoSolares/startpage/pull/14) ([betoSolares](https://github.com/betoSolares))
+
 ## [v1.4.0](https://github.com/betoSolares/startpage/tree/v1.4.0) (2024-02-09)
 
 [Full Changelog](https://github.com/betoSolares/startpage/compare/v1.3.0...v1.4.0)
