@@ -20,3 +20,7 @@ npm-debug.log*
 
 # typescript
 *.tsbuildinfo
+
+# local env files
+.env
+.env*.local
