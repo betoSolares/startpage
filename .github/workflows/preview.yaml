@@ -10,7 +10,7 @@ on:
       - master
 
 jobs:
-  create_deployment:
+  create_preview_deployment:
     runs-on: ubuntu-latest
     environment:
       name: Preview

@@ -10,7 +10,7 @@ on:
       - created
 
 jobs:
-  create_deployment:
+  create_production_deployment:
     runs-on: ubuntu-latest
     environment:
       name: Production
