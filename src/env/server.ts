@@ -8,6 +8,7 @@ export const env = createEnv({
     PGDATABASE: z.string(),
     PGHOST: z.string(),
     DATABASE_URL: z.string().url(),
+    DIRECT_URL: z.string().url(),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
@@ -18,6 +19,7 @@ export const env = createEnv({
     PGDATABASE: process.env.PGDATABASE,
     PGHOST: process.env.PGHOST,
     DATABASE_URL: process.env.DATABASE_URL,
+    DIRECT_URL: process.env.DIRECT_URL,
     NODE_ENV: process.env.NODE_ENV,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
