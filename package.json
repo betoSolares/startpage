@@ -7,12 +7,13 @@
   "scripts": {
     "build": "next build",
     "db": "docker-compose up",
-    "db:push": "prisma studio",
+    "db:new": "prisma migrate dev --name",
+    "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
+    "db:validate": "prisma validate",
     "dev": "next dev",
     "lint": "next lint",
-    "lint:fix": "prettier --write --ignore-path .gitignore . && next lint",
-    "postinstall": "prisma generate",
+    "lint:fix": "prettier --write --ignore-path .gitignore . && next lint && prisma format",
     "start": "next start"
   },
   "dependencies": {
