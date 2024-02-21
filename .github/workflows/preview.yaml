@@ -37,11 +37,11 @@ jobs:
 
       - name: Run Migrations
         run: |
-            touch .env
-            echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
-            echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
-            npx prisma generate
-            npx prisma migrate deploy
+          touch .env
+          echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
+          echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
+          npx prisma generate
+          npx prisma migrate deploy
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
