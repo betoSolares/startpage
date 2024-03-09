@@ -1,9 +1,7 @@
 import createJiti from 'jiti';
 
 const jiti = createJiti(new URL(import.meta.url).pathname);
-
-jiti('./src/lib/env.server');
-jiti('./src/lib/env.client');
+jiti('./src/lib/env');
 
 /** @type {import("next").NextConfig} */
 const config = {};

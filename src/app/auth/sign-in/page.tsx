@@ -1,5 +1,5 @@
-import { FormWrapper } from '@/components/auth/form-wrapper';
-import { SignInForm } from '@/components/auth/sign-in-form';
+import { FormWrapper } from '@/app/_components/auth/form-wrapper';
+import { SignInForm } from '@/app/_components/auth/sign-in-form';
 
 export default function AuthSignInPage() {
   return (
