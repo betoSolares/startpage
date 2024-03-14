@@ -6,7 +6,7 @@ import { createTRPCReact } from '@trpc/react-query';
 import { useState } from 'react';
 
 import { getUrl, transformer } from '@/lib/trpc';
-import { AppRouter } from '@/server';
+import { AppRouter } from '@/server/api';
 
 interface TRPCProviderProps {
   children: React.ReactNode;

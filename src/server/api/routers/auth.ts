@@ -11,7 +11,10 @@ const signUp = publicProcedure
     const validatedFields = SignUpSchema.safeParse(input);
 
     if (!validatedFields.success) {
-      throw new TRPCError({ code: 'BAD_REQUEST' });
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
     }
 
     const { email, password } = validatedFields.data;
@@ -19,7 +22,10 @@ const signUp = publicProcedure
 
     const existingUser = await ctx.db.user.findUnique({ where: { email } });
     if (existingUser) {
-      throw new TRPCError({ code: 'BAD_REQUEST' });
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Email is invalid or has already been taken',
+      });
     }
 
     return await ctx.db.user.create({

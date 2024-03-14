@@ -1,12 +1,10 @@
 import { initTRPC } from '@trpc/server';
 import { ZodError } from 'zod';
 
-import { db } from '@/lib/db';
 import { transformer } from '@/lib/trpc';
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
-    db,
     ...opts,
   };
 };
