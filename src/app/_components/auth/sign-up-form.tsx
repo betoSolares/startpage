@@ -40,9 +40,9 @@ export function SignUpForm() {
             name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className='text-card-foreground'>Email</FormLabel>
                 <FormControl>
-                  <Input type='email' {...field} />
+                  <Input type='email' {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -53,9 +53,9 @@ export function SignUpForm() {
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className='text-card-foreground'>Password</FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input type='password' {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -66,9 +66,11 @@ export function SignUpForm() {
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password confirmation</FormLabel>
+                <FormLabel className='text-card-foreground'>
+                  Password confirmation
+                </FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input type='password' {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
