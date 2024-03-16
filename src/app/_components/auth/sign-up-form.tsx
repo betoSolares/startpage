@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 import { SignUpSchema } from '@/schemas/auth';
 
+import { api } from '../trpc-provider';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -16,6 +17,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { FormAlert } from './form-alert';
 
 export function SignUpForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -27,14 +29,27 @@ export function SignUpForm() {
     },
   });
 
+  const userCreator = api.auth.signUp.useMutation();
+
   const onSubmit = (values: z.infer<typeof SignUpSchema>) => {
-    console.log(values);
+    userCreator.mutate(values);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <div className='space-y-4'>
+          {userCreator.isError && (
+            <FormAlert message={userCreator.error.message} type='error' />
+          )}
+          {userCreator.isSuccess && (
+            <FormAlert
+              message={`We just sent an email to ${
+                form.getValues().email
+              }. Click the link in the email to verify your account`}
+              type='success'
+            />
+          )}
           <FormField
             control={form.control}
             name='email'
