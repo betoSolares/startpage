@@ -2,12 +2,13 @@ import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcrypt';
 
 import { SignUpSchema } from '@/schemas/auth';
+import { createUser, getUserByEmail } from '@/server/data/users';
 
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
 const signUp = publicProcedure
   .input(SignUpSchema)
-  .mutation(async ({ ctx, input }) => {
+  .mutation(async ({ input }) => {
     const validatedFields = SignUpSchema.safeParse(input);
 
     if (!validatedFields.success) {
@@ -20,20 +21,30 @@ const signUp = publicProcedure
     const { email, password } = validatedFields.data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const existingUser = await ctx.db.user.findUnique({ where: { email } });
-    if (existingUser) {
+    const existingUser = await getUserByEmail(email);
+    if (existingUser.isErr()) {
       throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Email is invalid or has already been taken',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
       });
     }
 
-    return await ctx.db.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-      },
-    });
+    if (existingUser.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid email or already taken',
+      });
+    }
+
+    const createdUser = await createUser(email, hashedPassword);
+    if (createdUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+
+    return createdUser.value;
   });
 
 export const authRouter = createTRPCRouter({
