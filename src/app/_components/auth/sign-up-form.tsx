@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -57,7 +58,12 @@ export function SignUpForm() {
               <FormItem>
                 <FormLabel className='text-card-foreground'>Email</FormLabel>
                 <FormControl>
-                  <Input type='email' {...field} required />
+                  <Input
+                    disabled={userCreator.isLoading}
+                    type='email'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -70,7 +76,12 @@ export function SignUpForm() {
               <FormItem>
                 <FormLabel className='text-card-foreground'>Password</FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} required />
+                  <Input
+                    disabled={userCreator.isLoading}
+                    type='password'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -85,15 +96,28 @@ export function SignUpForm() {
                   Password confirmation
                 </FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} required />
+                  <Input
+                    disabled={userCreator.isLoading}
+                    type='password'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button type='submit' className='w-full'>
-          Sign up
+        <Button
+          type='submit'
+          className='w-full'
+          disabled={userCreator.isLoading}
+        >
+          {userCreator.isLoading ? (
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          ) : (
+            'Sign up'
+          )}
         </Button>
       </form>
     </Form>
