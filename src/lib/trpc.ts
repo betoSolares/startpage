@@ -1,7 +1,7 @@
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import superjson from 'superjson';
 
-import { AppRouter } from '@/server';
+import { AppRouter } from '@/server/api';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined') return '';
