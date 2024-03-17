@@ -9,14 +9,24 @@ export const SignInSchema = z.object({
   password: z.string(),
 });
 
-export const SignUpSchema = z.object({
-  email: z.string().email(),
-  password: z.string().regex(passwordValidation, {
-    message:
-      'Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character',
-  }),
-  confirmPassword: z.string(),
-});
+export const SignUpSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().regex(passwordValidation, {
+      message:
+        'The password needs to be a minimum of 8 characters, and have at least one uppercase letter, one lowercase letter, one number, and one special character',
+    }),
+    confirmPassword: z.string(),
+  })
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    {
+      message: 'Passwords must match',
+      path: ['confirmPassword'],
+    }
+  );
 
 export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
@@ -25,7 +35,7 @@ export const ForgotPasswordSchema = z.object({
 export const ResetPasswordSchema = z.object({
   password: z.string().regex(passwordValidation, {
     message:
-      'Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character',
+      'The password needs to be a minimum of 8 characters, and have at least one uppercase letter, one lowercase letter, one number, and one special character',
   }),
   confirmPassword: z.string(),
 });

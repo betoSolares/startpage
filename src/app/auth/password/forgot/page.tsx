@@ -1,5 +1,5 @@
-import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
-import { FormWrapper } from '@/components/auth/form-wrapper';
+import { ForgotPasswordForm } from '@/app/_components/auth/forgot-password-form';
+import { FormWrapper } from '@/app/_components/auth/form-wrapper';
 
 export default function AuthPasswordForgotPage() {
   return (

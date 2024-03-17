@@ -5,7 +5,7 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'neverthrow'],
   extends: [
     'plugin:@next/next/recommended',
     'plugin:@typescript-eslint/recommended-type-checked',
@@ -26,6 +26,7 @@ const config = {
     '@typescript-eslint/no-redundant-type-constituents': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
+    'neverthrow/must-use-result': 'error',
   },
   globals: {},
 };
