@@ -8,8 +8,8 @@ import { observable } from '@trpc/server/observable';
 import { TRPCErrorResponse } from '@trpc/server/rpc';
 import { cache } from 'react';
 
-import { appRouter } from '@/server';
-import { createTRPCContext } from '@/server/trpc';
+import { appRouter } from '@/server/api';
+import { createTRPCContext } from '@/server/api/trpc';
 
 import { transformer } from './trpc';
 
