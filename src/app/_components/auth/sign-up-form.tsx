@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { SignUpSchema } from '@/schemas/auth';
 
+import { PasswordInput } from '../common/password-input';
 import { api } from '../trpc-provider';
 import { Button } from '../ui/button';
 import {
@@ -76,9 +77,8 @@ export function SignUpForm() {
               <FormItem>
                 <FormLabel className='text-card-foreground'>Password</FormLabel>
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     disabled={userCreator.isLoading}
-                    type='password'
                     {...field}
                     required
                   />
@@ -96,9 +96,8 @@ export function SignUpForm() {
                   Password confirmation
                 </FormLabel>
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     disabled={userCreator.isLoading}
-                    type='password'
                     {...field}
                     required
                   />
