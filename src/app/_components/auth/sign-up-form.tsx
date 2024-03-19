@@ -46,9 +46,7 @@ export function SignUpForm() {
           )}
           {userCreator.isSuccess && (
             <FormAlert
-              message={`We just sent an email to ${
-                form.getValues().email
-              }. Click the link in the email to verify your account`}
+              message={`We just sent an email to ${userCreator.data.email}. Click the link in the email to verify your account`}
               type='success'
             />
           )}
