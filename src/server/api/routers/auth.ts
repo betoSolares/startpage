@@ -44,7 +44,10 @@ const signUp = publicProcedure
       });
     }
 
-    return createdUser.value;
+    return {
+      id: createdUser.value.id,
+      email: createdUser.value.email,
+    };
   });
 
 export const authRouter = createTRPCRouter({
