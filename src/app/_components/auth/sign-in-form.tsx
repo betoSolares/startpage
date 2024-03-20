@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { SignInSchema } from '@/schemas/auth';
 
+import { PasswordInput } from '../common/password-input';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -42,7 +43,7 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type='email' {...field} />
+                  <Input type='email' {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -55,7 +56,7 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <PasswordInput {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>

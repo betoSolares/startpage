@@ -1,6 +1,7 @@
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
+import { SessionProvider } from 'next-auth/react';
 
 import '@/app/_styles/globals.css';
 import { cn } from '@/lib/shadcn';
@@ -32,19 +33,21 @@ export default function RootLayout({ children }: RootLayoutProps) {
           GeistMono.variable
         )}
       >
-        <TRPCProvider>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            <main className='container'>
-              <div className='min-h-screen pt-16'>{children}</div>
-            </main>
-          </ThemeProvider>
-        </TRPCProvider>
+        <SessionProvider>
+          <TRPCProvider>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='system'
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              <main className='container'>
+                <div className='min-h-screen pt-16'>{children}</div>
+              </main>
+            </ThemeProvider>
+          </TRPCProvider>
+        </SessionProvider>
       </body>
     </html>
   );
