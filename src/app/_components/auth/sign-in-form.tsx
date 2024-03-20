@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,6 +25,7 @@ import { Input } from '../ui/input';
 import { FormAlert } from './form-alert';
 
 export function SignInForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -36,6 +38,7 @@ export function SignInForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof SignInSchema>) => {
+    setIsLoading(true);
     const result = await signIn('credentials', { ...values, redirect: false });
     if (!result?.error) {
       setError('');
@@ -46,6 +49,8 @@ export function SignInForm() {
     result?.error === 'CredentialsSignin'
       ? setError('Invalid email or password')
       : setError('An unexpected error occurred. Try again later');
+
+    setIsLoading(false);
   };
 
   return (
@@ -60,7 +65,12 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel className='text-card-foreground'>Email</FormLabel>
                 <FormControl>
-                  <Input type='email' {...field} required />
+                  <Input
+                    disabled={isLoading}
+                    type='email'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -73,7 +83,7 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel className='text-card-foreground'>Password</FormLabel>
                 <FormControl>
-                  <PasswordInput {...field} required />
+                  <PasswordInput disabled={isLoading} {...field} required />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -85,8 +95,12 @@ export function SignInForm() {
             <p className='text-sm'>Forgot password?</p>
           </Link>
         </Button>
-        <Button type='submit' className='w-full'>
-          Sign in
+        <Button type='submit' className='w-full' disabled={isLoading}>
+          {isLoading ? (
+            <Loader2 className='2-4 mr-2 h-4 animate-spin' />
+          ) : (
+            'Sign In'
+          )}
         </Button>
       </form>
     </Form>
