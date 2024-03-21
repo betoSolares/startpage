@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import { SignUpSchema } from '@/schemas/auth';
 import { createUser, getUserByEmail } from '@/server/data/users';
