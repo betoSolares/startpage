@@ -3,6 +3,8 @@ import { WordArray } from 'crypto-ts/src/lib/WordArray';
 import { err, fromThrowable, ok } from 'neverthrow';
 import { decode, encode, trim } from 'url-safe-base64';
 
+import { env } from './env';
+
 type TokenType = 'account' | 'password' | 'email';
 
 interface TokenPayload {
@@ -47,7 +49,10 @@ export const encodeToken = (type: TokenType, email: string) => {
     expiration: expiration,
   } as TokenPayload;
 
-  const encryptResult = safeAESEncrypt(JSON.stringify(payload), 'secret');
+  const encryptResult = safeAESEncrypt(
+    JSON.stringify(payload),
+    env.TOKEN_SECRET
+  );
   if (encryptResult.isErr()) {
     return err(encryptResult.error);
   }
@@ -59,7 +64,7 @@ export const encodeToken = (type: TokenType, email: string) => {
 
 export const decodeToken = (base64: string) => {
   const token = decode(base64);
-  const payload = safeAESDecrypt(token, 'secret');
+  const payload = safeAESDecrypt(token, env.TOKEN_SECRET);
   if (payload.isErr()) {
     return err(payload.error);
   }
