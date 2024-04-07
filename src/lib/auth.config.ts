@@ -7,6 +7,7 @@ import { SignInSchema } from '@/schemas/auth';
 import { getUserByEmail } from '@/server/data/users';
 
 import { db } from './db';
+import { encodeToken } from './tokens';
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(db),
@@ -48,6 +49,26 @@ export const authConfig: NextAuthConfig = {
       }
 
       return session;
+    },
+    signIn: async ({ user }) => {
+      const email = user.email ?? '';
+      const existingUser = await getUserByEmail(email);
+      if (!existingUser.isOk() || !existingUser.value) {
+        return false;
+      }
+
+      if (existingUser.value.emailVerified) {
+        return true;
+      }
+
+      const token = encodeToken('account', email);
+      if (token.isErr()) {
+        return false;
+      }
+
+      console.log('token: ', token.value);
+
+      return false;
     },
   },
 };
