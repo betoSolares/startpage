@@ -9,6 +9,8 @@ export const env = createEnv({
       .default('development'),
     AUTH_SECRET: z.string(),
     TOKEN_SECRET: z.string(),
+    RESEND_API_KEY: z.string(),
+    RESEND_SENDER: z.string(),
   },
   client: {},
   runtimeEnv: {
@@ -16,6 +18,8 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     AUTH_SECRET: process.env.AUTH_SECRET,
     TOKEN_SECRET: process.env.TOKEN_SECRET,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_SENDER: process.env.RESEND_SENDER,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
