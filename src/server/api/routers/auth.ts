@@ -1,6 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 
+import { sendVerificationEmail } from '@/lib/emails';
+import { encodeToken } from '@/lib/tokens';
 import { SignUpSchema } from '@/schemas/auth';
 import { createUser, getUserByEmail } from '@/server/data/users';
 
@@ -40,9 +42,21 @@ const signUp = publicProcedure
     if (createdUser.isErr()) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'An unexpected error occurred. Try again later',
+        message:
+          'An unexpected error occurred creating the user. Try again later',
       });
     }
+
+    const token = encodeToken('account', createdUser.value.email);
+    if (token.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred sending the confirmation token. Try again later',
+      });
+    }
+
+    await sendVerificationEmail(createdUser.value.email, token.value);
 
     return {
       id: createdUser.value.id,

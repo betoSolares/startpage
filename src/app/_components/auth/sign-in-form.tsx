@@ -27,6 +27,7 @@ import { FormAlert } from './form-alert';
 export function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const form = useForm<z.infer<typeof SignInSchema>>({
@@ -39,6 +40,9 @@ export function SignInForm() {
 
   const onSubmit = async (values: z.infer<typeof SignInSchema>) => {
     setIsLoading(true);
+    setError('');
+    setSuccess('');
+
     const result = await signIn('credentials', { ...values, redirect: false });
     if (!result?.error) {
       setError('');
@@ -46,9 +50,15 @@ export function SignInForm() {
       return;
     }
 
-    result?.error === 'CredentialsSignin'
-      ? setError('Invalid email or password')
-      : setError('An unexpected error occurred. Try again later');
+    if (result.error === 'CredentialsSignin') {
+      setError('Invalid email or password');
+    } else if (result.error === 'AuthorizedCallbackError') {
+      setSuccess(
+        `We resent the confirmation email. Click the link in the email to verify your account`
+      );
+    } else {
+      setError('An unexpected error occurred. Try again later');
+    }
 
     setIsLoading(false);
   };
@@ -58,6 +68,7 @@ export function SignInForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
         <div className='space-y-4'>
           {error && <FormAlert message={error} type='error' />}
+          {success && <FormAlert message={success} type='success' />}
           <FormField
             control={form.control}
             name='email'
