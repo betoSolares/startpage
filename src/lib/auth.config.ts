@@ -7,6 +7,7 @@ import { SignInSchema } from '@/schemas/auth';
 import { getUserByEmail } from '@/server/data/users';
 
 import { db } from './db';
+import { sendVerificationEmail } from './emails';
 import { encodeToken } from './tokens';
 
 export const authConfig: NextAuthConfig = {
@@ -66,7 +67,7 @@ export const authConfig: NextAuthConfig = {
         return false;
       }
 
-      console.log('token: ', token.value);
+      await sendVerificationEmail(existingUser.value.email, token.value);
 
       return false;
     },

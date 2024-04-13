@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 
+import { sendVerificationEmail } from '@/lib/emails';
 import { encodeToken } from '@/lib/tokens';
 import { SignUpSchema } from '@/schemas/auth';
 import { createUser, getUserByEmail } from '@/server/data/users';
@@ -55,7 +56,7 @@ const signUp = publicProcedure
       });
     }
 
-    console.log('TOKEN: ', token.value);
+    await sendVerificationEmail(createdUser.value.email, token.value);
 
     return {
       id: createdUser.value.id,
