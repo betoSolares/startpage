@@ -1,9 +1,16 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 
-import { sendVerificationEmail } from '@/lib/emails';
+import {
+  sendResetPasswordInstructionsEmail,
+  sendVerificationEmail,
+} from '@/lib/emails';
 import { decodeToken, encodeToken } from '@/lib/tokens';
-import { AccountConfirmationSchema, SignUpSchema } from '@/schemas/auth';
+import {
+  AccountConfirmationSchema,
+  ForgotPasswordSchema,
+  SignUpSchema,
+} from '@/schemas/auth';
 import { createUser, getUserByEmail, verifyUser } from '@/server/data/users';
 
 import { createTRPCRouter, publicProcedure } from '../trpc';
@@ -12,7 +19,6 @@ const signUp = publicProcedure
   .input(SignUpSchema)
   .mutation(async ({ input }) => {
     const validatedFields = SignUpSchema.safeParse(input);
-
     if (!validatedFields.success) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -68,7 +74,6 @@ const verifyAccount = publicProcedure
   .input(AccountConfirmationSchema)
   .mutation(async ({ input }) => {
     const validatedFields = AccountConfirmationSchema.safeParse(input);
-
     if (!validatedFields.success) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -133,7 +138,53 @@ const verifyAccount = publicProcedure
     };
   });
 
+const forgotPassword = publicProcedure
+  .input(ForgotPasswordSchema)
+  .mutation(async ({ input }) => {
+    const validatedFields = ForgotPasswordSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const existingUser = await getUserByEmail(validatedFields.data.email);
+    if (existingUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+
+    if (!existingUser.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid email',
+      });
+    }
+
+    const token = encodeToken('password', existingUser.value.email);
+    if (token.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+
+    await sendResetPasswordInstructionsEmail(
+      existingUser.value.email,
+      token.value
+    );
+
+    return {
+      id: existingUser.value.id,
+      email: existingUser.value.email,
+    };
+  });
+
 export const authRouter = createTRPCRouter({
   signUp: signUp,
   verufyAccount: verifyAccount,
+  forgotPassword: forgotPassword,
 });
