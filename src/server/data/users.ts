@@ -33,3 +33,12 @@ export const verifyUser = async (id: string, email: string) => {
 
   return result;
 };
+
+export const resetUserPassword = async (id: string, password: string) => {
+  const result = await fromPromise(
+    db.user.update({ where: { id }, data: { password } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
