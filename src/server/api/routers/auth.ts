@@ -9,9 +9,15 @@ import { decodeToken, encodeToken } from '@/lib/tokens';
 import {
   AccountConfirmationSchema,
   ForgotPasswordSchema,
+  ResetPasswordSchema,
   SignUpSchema,
 } from '@/schemas/auth';
-import { createUser, getUserByEmail, verifyUser } from '@/server/data/users';
+import {
+  createUser,
+  getUserByEmail,
+  resetUserPassword,
+  verifyUser,
+} from '@/server/data/users';
 
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
@@ -183,8 +189,71 @@ const forgotPassword = publicProcedure
     };
   });
 
+const resetPassword = publicProcedure
+  .input(ResetPasswordSchema)
+  .mutation(async ({ input }) => {
+    const validatedFields = ResetPasswordSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const payload = decodeToken(validatedFields.data.token);
+    if (payload.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+
+    if (payload.value.type !== 'password') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'The token is invalid',
+      });
+    }
+
+    if (new Date(payload.value.expiration) < new Date()) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'The token has expired',
+      });
+    }
+
+    const existingUser = await getUserByEmail(payload.value.email);
+    if (existingUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+
+    if (!existingUser.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid email',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
+    const updatedUser = await resetUserPassword(
+      existingUser.value.id,
+      hashedPassword
+    );
+
+    if (updatedUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An unexpected error occurred. Try again later',
+      });
+    }
+  });
+
 export const authRouter = createTRPCRouter({
   signUp: signUp,
   verufyAccount: verifyAccount,
   forgotPassword: forgotPassword,
+  resetPassword: resetPassword,
 });

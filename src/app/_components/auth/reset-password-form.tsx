@@ -1,11 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { ResetPasswordSchema } from '@/schemas/auth';
 
+import { api } from '../trpc-provider';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -16,32 +19,55 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { FormAlert } from './form-alert';
 
 export function ResetPasswordForm() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+
   const form = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
       password: '',
       confirmPassword: '',
+      token: token ?? '',
     },
   });
 
+  const passwordResetter = api.auth.resetPassword.useMutation();
+
   const onSubmit = (values: z.infer<typeof ResetPasswordSchema>) => {
-    console.log(values);
+    passwordResetter.mutate(values);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <div className='space-y-4'>
+          {passwordResetter.isError && (
+            <FormAlert message={passwordResetter.error.message} type='error' />
+          )}
+          {passwordResetter.isSuccess && (
+            <FormAlert
+              message='Your password has been reseted. You can go back to sign in'
+              type='success'
+            />
+          )}
           <FormField
             control={form.control}
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New password</FormLabel>
+                <FormLabel className='text-card-foreground'>
+                  New password
+                </FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input
+                    disabled={passwordResetter.isLoading}
+                    type='password'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -52,17 +78,32 @@ export function ResetPasswordForm() {
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New password confirmation</FormLabel>
+                <FormLabel className='text-card-foreground'>
+                  New password confirmation
+                </FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input
+                    disabled={passwordResetter.isLoading}
+                    type='password'
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button type='submit' className='w-full'>
-          Reset password
+        <Button
+          type='submit'
+          className='w-full'
+          disabled={passwordResetter.isLoading}
+        >
+          {passwordResetter.isLoading ? (
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          ) : (
+            'Reset password'
+          )}
         </Button>
       </form>
     </Form>
