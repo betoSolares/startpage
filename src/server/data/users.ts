@@ -21,3 +21,15 @@ export const createUser = async (email: string, password: string) => {
 
   return result;
 };
+
+export const verifyUser = async (id: string, email: string) => {
+  const result = await fromPromise(
+    db.user.update({
+      where: { id },
+      data: { email: email, emailVerified: new Date() },
+    }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};

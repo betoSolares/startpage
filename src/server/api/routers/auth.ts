@@ -2,9 +2,9 @@ import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 
 import { sendVerificationEmail } from '@/lib/emails';
-import { encodeToken } from '@/lib/tokens';
-import { SignUpSchema } from '@/schemas/auth';
-import { createUser, getUserByEmail } from '@/server/data/users';
+import { decodeToken, encodeToken } from '@/lib/tokens';
+import { AccountConfirmationSchema, SignUpSchema } from '@/schemas/auth';
+import { createUser, getUserByEmail, verifyUser } from '@/server/data/users';
 
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
@@ -64,6 +64,76 @@ const signUp = publicProcedure
     };
   });
 
+const verifyAccount = publicProcedure
+  .input(AccountConfirmationSchema)
+  .mutation(async ({ input }) => {
+    const validatedFields = AccountConfirmationSchema.safeParse(input);
+
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const payload = decodeToken(validatedFields.data.token);
+    if (payload.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred while verifying the account. Try again later',
+      });
+    }
+
+    if (payload.value.type !== 'account') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'The token is invalid',
+      });
+    }
+
+    if (new Date(payload.value.expiration) < new Date()) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'The token has expired',
+      });
+    }
+
+    const existingUser = await getUserByEmail(payload.value.email);
+    if (existingUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred while verifying the account. Try again later',
+      });
+    }
+
+    if (!existingUser.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'The token is for an invalid email',
+      });
+    }
+
+    const verifiedUser = await verifyUser(
+      existingUser.value.id,
+      existingUser.value.email
+    );
+    if (verifiedUser.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred while verifying the account. Try again later',
+      });
+    }
+
+    return {
+      id: verifiedUser.value.id,
+      email: verifiedUser.value.email,
+    };
+  });
+
 export const authRouter = createTRPCRouter({
   signUp: signUp,
+  verufyAccount: verifyAccount,
 });

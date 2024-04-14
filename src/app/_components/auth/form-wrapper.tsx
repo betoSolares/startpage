@@ -35,18 +35,20 @@ export function FormWrapper({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>{children}</CardContent>
-      <CardFooter>
-        <div className='flex flex-row items-center gap-2'>
-          <p className='text-xs leading-7 text-muted-foreground [&:not(:first-child)]:mt-6'>
-            {footerText}
-          </p>
-          <Button variant='link' className='px-0' asChild>
-            <Link href={footerDestination}>
-              <p className='text-xs'>{footerActionText}</p>
-            </Link>
-          </Button>
-        </div>
-      </CardFooter>
+      {footerText && footerActionText && footerDestination && (
+        <CardFooter>
+          <div className='flex flex-row items-center gap-2'>
+            <p className='text-xs leading-7 text-muted-foreground [&:not(:first-child)]:mt-6'>
+              {footerText}
+            </p>
+            <Button variant='link' className='px-0' asChild>
+              <Link href={footerDestination}>
+                <p className='text-xs'>{footerActionText}</p>
+              </Link>
+            </Button>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
