@@ -28,6 +28,10 @@ export const SignUpSchema = z
     }
   );
 
+export const AccountConfirmationSchema = z.object({
+  token: z.string(),
+});
+
 export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
 });
