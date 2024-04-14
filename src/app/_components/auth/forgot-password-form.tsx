@@ -66,7 +66,11 @@ export function ForgotPasswordForm() {
             )}
           />
         </div>
-        <Button type='submit' className='w-full'>
+        <Button
+          type='submit'
+          className='w-full'
+          disabled={passwordForgetter.isLoading}
+        >
           {passwordForgetter.isLoading ? (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           ) : (
