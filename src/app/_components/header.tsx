@@ -1,9 +1,7 @@
-import { Settings } from 'lucide-react';
 import Image from 'next/image';
 import logo from 'public/img/logo.png';
 
-import { ThemeToggler } from './theme-toggler';
-import { Button } from './ui/button';
+import { Options } from './options';
 
 export function Header() {
   return (
@@ -24,11 +22,7 @@ export function Header() {
           </div>
           <div className='block'>
             <div className='ml-4 flex items-center gap-3 md:ml-6'>
-              <Button variant='outline' size='icon'>
-                <Settings className='h-6 w-6' />
-                <span className='sr-only'>Settings</span>
-              </Button>
-              <ThemeToggler />
+              <Options />
             </div>
           </div>
         </div>
