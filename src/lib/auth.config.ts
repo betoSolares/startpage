@@ -1,6 +1,6 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
-import { NextAuthConfig } from 'next-auth';
+import { DefaultSession, NextAuthConfig } from 'next-auth';
 import credentials from 'next-auth/providers/credentials';
 
 import { SignInSchema } from '@/schemas/auth';
@@ -9,6 +9,14 @@ import { getUserByEmail } from '@/server/data/users';
 import { db } from './db';
 import { sendVerificationEmail } from './emails';
 import { encodeToken } from './tokens';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession['user'];
+  }
+}
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(db),
