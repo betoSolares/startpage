@@ -10,7 +10,11 @@ export const CreateBookmarkSchema = z
   })
   .refine(
     (values) => {
-      if (values.type === 'Link') return !!values.link;
+      if (values.type === 'Link') {
+        return !!values.link;
+      }
+
+      return true;
     },
     {
       message: 'Link is missing',
