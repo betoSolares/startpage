@@ -1,12 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { CreateBookmarkSchema } from '@/schemas/bookmarks';
 
+import { api } from '../trpc-provider';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -34,7 +36,11 @@ import {
   SelectValue,
 } from '../ui/select';
 
-export function CreateBookmark() {
+interface CreateBookmarkProps {
+  parentId?: string;
+}
+
+export function CreateBookmark({ parentId }: CreateBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
@@ -46,16 +52,27 @@ export function CreateBookmark() {
     defaultValues: {
       title: '',
       type: 'Link',
-      link: undefined,
-      parentId: undefined,
+      link: '',
+      parentId: parentId,
     },
   });
 
+  const bookmarkCreator = api.bookmarks.create.useMutation();
+
   const onSubmit = (values: z.infer<typeof CreateBookmarkSchema>) => {
-    console.log('CreateBookmark values: ', values);
-    form.reset();
-    setOpen(false);
+    bookmarkCreator.mutate(values);
   };
+
+  useEffect(() => {
+    if (bookmarkCreator.isSuccess) {
+      form.reset();
+      setOpen(false);
+    }
+
+    if (bookmarkCreator.isError) {
+      console.log('Error: ', bookmarkCreator.error.message);
+    }
+  }, [bookmarkCreator.isSuccess, bookmarkCreator.isError]);
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
@@ -84,6 +101,7 @@ export function CreateBookmark() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={bookmarkCreator.isLoading}
                       >
                         <FormControl className='col-span-3'>
                           <SelectTrigger>
@@ -112,7 +130,12 @@ export function CreateBookmark() {
                         Title
                       </FormLabel>
                       <FormControl className='col-span-3'>
-                        <Input type='text' {...field} required />
+                        <Input
+                          type='text'
+                          disabled={bookmarkCreator.isLoading}
+                          {...field}
+                          required
+                        />
                       </FormControl>
                     </div>
                     <div className='grid grid-cols-4 items-center gap-4'>
@@ -132,7 +155,12 @@ export function CreateBookmark() {
                           Link
                         </FormLabel>
                         <FormControl className='col-span-3'>
-                          <Input type='text' {...field} required />
+                          <Input
+                            type='text'
+                            disabled={bookmarkCreator.isLoading}
+                            {...field}
+                            required
+                          />
                         </FormControl>
                       </div>
                       <div className='grid grid-cols-4 items-center gap-4'>
@@ -144,7 +172,13 @@ export function CreateBookmark() {
               )}
             </div>
             <DialogFooter>
-              <Button type='submit'>Create</Button>
+              <Button type='submit' disabled={bookmarkCreator.isLoading}>
+                {bookmarkCreator.isLoading ? (
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                ) : (
+                  'Create'
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
