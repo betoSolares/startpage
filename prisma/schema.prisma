@@ -19,6 +19,11 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+enum BookmarkType {
+  Link
+  Directory
+}
+
 model Bookmark {
   id       String       @id @default(cuid())
   type     BookmarkType @default(Link)
@@ -30,10 +35,7 @@ model Bookmark {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum BookmarkType {
-  Link
-  Directory
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent   Bookmark?  @relation("BookmarkParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children Bookmark[] @relation("BookmarkParent")
 }
