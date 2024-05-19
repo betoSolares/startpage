@@ -9,8 +9,33 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String     @id @default(cuid())
+  email         String     @unique
   emailVerified DateTime?
   password      String
+  bookmarks     Bookmark[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BookmarkType {
+  Link
+  Directory
+}
+
+model Bookmark {
+  id       String       @id @default(cuid())
+  type     BookmarkType @default(Link)
+  title    String
+  link     String?
+  userId   String
+  parentId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent   Bookmark?  @relation("BookmarkParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children Bookmark[] @relation("BookmarkParent")
 }
