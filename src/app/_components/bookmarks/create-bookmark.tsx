@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { CreateBookmarkSchema } from '@/schemas/bookmarks';
@@ -44,6 +45,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
+    form.reset();
     setOpen(!open);
   };
 
@@ -70,7 +72,9 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
     }
 
     if (bookmarkCreator.isError) {
-      console.log('Error: ', bookmarkCreator.error.message);
+      toast.error(bookmarkCreator.error.message, {
+        description: 'Failed to create bookmark',
+      });
     }
   }, [bookmarkCreator.isSuccess, bookmarkCreator.isError]);
 

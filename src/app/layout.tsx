@@ -9,6 +9,7 @@ import { cn } from '@/lib/shadcn';
 import { Header } from './_components/header';
 import { ThemeProvider } from './_components/theme-provider';
 import { TRPCProvider } from './_components/trpc-provider';
+import { Toaster } from './_components/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'Startpage',
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <main className='container'>
                 <div className='min-h-screen pt-16'>{children}</div>
               </main>
+              <Toaster closeButton />
             </ThemeProvider>
           </TRPCProvider>
         </SessionProvider>
