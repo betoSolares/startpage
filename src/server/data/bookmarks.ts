@@ -19,3 +19,12 @@ export const createBookmark = async (
 
   return result;
 };
+
+export const getBookmarkById = async (id: string) => {
+  const result = await fromPromise(
+    db.bookmark.findUnique({ where: { id } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
