@@ -43,5 +43,5 @@ export const CreateBookmarkSchema = z
   });
 
 export const GetBookmarksSchema = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().cuid(),
 });

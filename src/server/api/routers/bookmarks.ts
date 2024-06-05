@@ -73,7 +73,20 @@ const create = protectedProcedure
     };
   });
 
-const get = protectedProcedure
+const getTopLevel = protectedProcedure.query(async ({ ctx }) => {
+  const bookmarks = await getTopLevelBookmarks(ctx.session.user.id);
+  if (bookmarks.isErr()) {
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message:
+        'An unexpected error occurred while getting the bookmarks. Try again later',
+    });
+  }
+
+  return { bookmarks: bookmarks.value };
+});
+
+const getBookmarkWithChilds = protectedProcedure
   .input(GetBookmarksSchema)
   .query(async ({ ctx, input }) => {
     const validatedFields = GetBookmarksSchema.safeParse(input);
@@ -84,22 +97,7 @@ const get = protectedProcedure
       });
     }
 
-    const { id } = validatedFields.data;
-
-    if (id === undefined) {
-      const bookmarks = await getTopLevelBookmarks(ctx.session.user.id);
-      if (bookmarks.isErr()) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message:
-            'An unexpected error occurred while getting the bookmarks. Try again later',
-        });
-      }
-
-      return { bookmarks: bookmarks.value };
-    }
-
-    const bookmarks = await getChildrenBookmarks(id);
+    const bookmarks = await getChildrenBookmarks(validatedFields.data.id);
     if (bookmarks.isErr()) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -131,5 +129,6 @@ const get = protectedProcedure
 
 export const bookmarksRouter = createTRPCRouter({
   create: create,
-  get: get,
+  getTopLevel: getTopLevel,
+  getBookmarkWithChilds: getBookmarkWithChilds,
 });
