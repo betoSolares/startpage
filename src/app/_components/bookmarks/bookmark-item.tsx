@@ -1,11 +1,21 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { BookmarkType } from '@prisma/client';
+import { FolderOpen, Move, Pencil, Trash } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 interface BookmarkItemProps {
   id: string;
+  type: BookmarkType;
+  title: string;
+  link: string | null;
 }
 
-export function BookmarkItem({ id }: BookmarkItemProps) {
+export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
   const {
     attributes,
     listeners,
@@ -15,10 +25,18 @@ export function BookmarkItem({ id }: BookmarkItemProps) {
     isDragging,
   } = useSortable({ id });
 
+  const cleanLink = (url: string | null) => {
+    if (url === null) return '';
+    const newURL = new URL(url);
+    return newURL.host;
+  };
+
+  const imgSource = `https://api.statvoo.com/favicon/${cleanLink(link)}`;
+
   return (
     <div
+      className='flex w-44 flex-col items-center gap-2'
       ref={setNodeRef}
-      className='h-28 w-28 border-2 border-solid border-red-600 bg-purple-200'
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
@@ -26,12 +44,44 @@ export function BookmarkItem({ id }: BookmarkItemProps) {
         opacity: isDragging ? 0.3 : 1,
       }}
     >
-      <div className='flex flex-col'>
-        <button {...listeners} {...attributes}>
-          Drag handle
-        </button>
-        <div className=''>{id}</div>
+      <div className='group flex h-40 w-full flex-col rounded-lg border border-solid border-border bg-card'>
+        <div className='md:invisible md:group-hover:visible'>
+          <Button
+            className='float-left'
+            variant='outline'
+            size='icon'
+            {...listeners}
+            {...attributes}
+          >
+            <Move className='h-4 w-4' />
+          </Button>
+          <div className='float-right flex gap-1'>
+            <Button variant='outline' size='icon'>
+              <Pencil className='h-4 w-4' />
+            </Button>
+            <Button variant='outline' size='icon'>
+              <Trash className='h-4 w-4' />
+            </Button>
+          </div>
+        </div>
+        <div className='flex-grow'>
+          <Link href={link ?? `/${id}`}>
+            <div className='flex h-full w-full items-center justify-center'>
+              {type === 'Link' ? (
+                <Image
+                  src={imgSource}
+                  alt={`${title} logo`}
+                  width={32}
+                  height={32}
+                />
+              ) : (
+                <FolderOpen className='h-8 w-8' />
+              )}
+            </div>
+          </Link>
+        </div>
       </div>
+      <Badge variant='outline'>{title}</Badge>
     </div>
   );
 }
