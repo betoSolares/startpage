@@ -124,7 +124,7 @@ const getBookmarkWithChilds = protectedProcedure
       }
     }
 
-    return { bookmarks: bookmarks.value };
+    return { parentBookmark: bookmarks.value };
   });
 
 export const bookmarksRouter = createTRPCRouter({
