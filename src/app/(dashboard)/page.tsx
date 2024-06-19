@@ -1,10 +1,13 @@
+import { api } from '@/lib/trpc-server';
+
 import { BookmarksGrid } from '../_components/bookmarks/bookmarks-grid';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const bookmarks = await api.bookmarks.getTopLevel.query();
+
   return (
-    <div>
-      <p>Dashboard</p>
-      <BookmarksGrid />
+    <div className='p-8'>
+      <BookmarksGrid bookmarks={bookmarks.bookmarks} />
     </div>
   );
 }
