@@ -2,11 +2,11 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { BookmarkType } from '@prisma/client';
 import { FolderOpen, Move, Pencil, Trash } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { BookmarkImage } from './bookmark-image';
 
 interface BookmarkItemProps {
   id: string;
@@ -25,13 +25,9 @@ export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
     isDragging,
   } = useSortable({ id });
 
-  const cleanLink = (url: string | null) => {
-    if (url === null) return '';
-    const newURL = new URL(url);
-    return newURL.host;
+  const sanatizeURL = (url: string) => {
+    return new URL(url.startsWith('http') ? url : `https://${url}`);
   };
-
-  const imgSource = `https://api.statvoo.com/favicon/${cleanLink(link)}`;
 
   return (
     <div
@@ -65,14 +61,14 @@ export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
           </div>
         </div>
         <div className='flex-grow'>
-          <Link href={link ?? `/${id}`}>
+          <Link href={link ? sanatizeURL(link) : `/${id}`}>
             <div className='flex h-full w-full items-center justify-center'>
-              {type === 'Link' ? (
-                <Image
-                  src={imgSource}
+              {type === 'Link' && link ? (
+                <BookmarkImage
+                  src={`https://www.google.com/s2/favicons?domain=${
+                    sanatizeURL(link).host
+                  }&sz=32`}
                   alt={`${title} logo`}
-                  width={32}
-                  height={32}
                 />
               ) : (
                 <FolderOpen className='h-8 w-8' />
