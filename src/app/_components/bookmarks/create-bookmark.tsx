@@ -1,6 +1,5 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Bookmark } from '@prisma/client';
 import { BookmarkPlus, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -40,9 +39,13 @@ import {
 
 interface CreateBookmarkProps {
   parentId?: string;
+  onCreatedBookmark: (bookmark: Bookmark) => void;
 }
 
-export function CreateBookmark({ parentId }: CreateBookmarkProps) {
+export function CreateBookmark({
+  parentId,
+  onCreatedBookmark,
+}: CreateBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
@@ -68,6 +71,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
 
   useEffect(() => {
     if (bookmarkCreator.isSuccess) {
+      onCreatedBookmark(bookmarkCreator.data as Bookmark);
       form.reset();
       setOpen(false);
     }

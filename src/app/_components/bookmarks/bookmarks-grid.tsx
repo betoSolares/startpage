@@ -57,6 +57,12 @@ export function BookmarksGrid({ bookmarks }: BookmarksGridProps) {
     }
   };
 
+  const handleNewBookmark = (bookmark: Bookmark) => {
+    const newItems = [...items];
+    newItems.push(bookmark);
+    setItems(newItems);
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -88,7 +94,7 @@ export function BookmarksGrid({ bookmarks }: BookmarksGridProps) {
             )}
           </DragOverlay>
         </SortableContext>
-        <CreateBookmark />
+        <CreateBookmark onCreatedBookmark={handleNewBookmark} />
       </div>
     </DndContext>
   );
