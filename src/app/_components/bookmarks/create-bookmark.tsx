@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { BookmarkPlus, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { CreateBookmarkSchema } from '@/schemas/bookmarks';
 
 import { api } from '../trpc-provider';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -80,9 +81,14 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogTrigger asChild>
-        <Button variant='outline'>Create bookmark</Button>
-      </DialogTrigger>
+      <div className='flex w-44 flex-col items-center gap-3'>
+        <DialogTrigger asChild>
+          <div className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-solid border-border bg-card'>
+            <BookmarkPlus className='mt-10 h-8 w-8 items-center text-primary' />
+          </div>
+        </DialogTrigger>
+        <Badge variant='secondary'>Create bookmark</Badge>
+      </div>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Create bookmark</DialogTitle>

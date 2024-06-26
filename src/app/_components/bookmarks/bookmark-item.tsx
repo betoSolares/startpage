@@ -31,7 +31,7 @@ export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
 
   return (
     <div
-      className='flex w-44 flex-col items-center gap-2'
+      className='flex w-44 flex-col items-center gap-3'
       ref={setNodeRef}
       style={{
         transform: CSS.Transform.toString(transform),
