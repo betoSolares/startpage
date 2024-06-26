@@ -1,7 +1,12 @@
 import { TRPCError } from '@trpc/server';
 
-import { CreateBookmarkSchema } from '@/schemas/bookmarks';
-import { createBookmark, getBookmarkById } from '@/server/data/bookmarks';
+import { CreateBookmarkSchema, GetBookmarksSchema } from '@/schemas/bookmarks';
+import {
+  createBookmark,
+  getBookmarkById,
+  getChildrenBookmarks,
+  getTopLevelBookmarks,
+} from '@/server/data/bookmarks';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
@@ -68,6 +73,62 @@ const create = protectedProcedure
     };
   });
 
+const getTopLevel = protectedProcedure.query(async ({ ctx }) => {
+  const bookmarks = await getTopLevelBookmarks(ctx.session.user.id);
+  if (bookmarks.isErr()) {
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message:
+        'An unexpected error occurred while getting the bookmarks. Try again later',
+    });
+  }
+
+  return { bookmarks: bookmarks.value };
+});
+
+const getBookmarkWithChilds = protectedProcedure
+  .input(GetBookmarksSchema)
+  .query(async ({ ctx, input }) => {
+    const validatedFields = GetBookmarksSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const bookmarks = await getChildrenBookmarks(validatedFields.data.id);
+    if (bookmarks.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred creating the bookmark. Try again later',
+      });
+    }
+
+    if (bookmarks.value) {
+      const { userId, type } = bookmarks.value;
+
+      if (userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'No access to this bookmark',
+        });
+      }
+
+      if (type !== 'Directory') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Only directories can have children',
+        });
+      }
+    }
+
+    return { parentBookmark: bookmarks.value };
+  });
+
 export const bookmarksRouter = createTRPCRouter({
   create: create,
+  getTopLevel: getTopLevel,
+  getBookmarkWithChilds: getBookmarkWithChilds,
 });
