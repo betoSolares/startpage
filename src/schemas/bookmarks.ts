@@ -45,3 +45,9 @@ export const CreateBookmarkSchema = z
 export const GetBookmarksSchema = z.object({
   id: z.string().cuid(),
 });
+
+export const UpdateBookmarkSchema = z.object({
+  id: z.string().cuid(),
+  title: z.string().trim().min(1),
+  link: z.string().optional(),
+});
