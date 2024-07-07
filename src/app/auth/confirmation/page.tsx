@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { ConfirmationForm } from '@/app/_components/auth/confirmation-form';
 import { FormWrapper } from '@/app/_components/auth/form-wrapper';
 
@@ -10,7 +12,9 @@ export default function AuthConfirmationPage() {
       footerActionText=''
       footerDestination=''
     >
-      <ConfirmationForm />
+      <Suspense>
+        <ConfirmationForm />
+      </Suspense>
     </FormWrapper>
   );
 }

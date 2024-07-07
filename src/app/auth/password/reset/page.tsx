@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { FormWrapper } from '@/app/_components/auth/form-wrapper';
 import { ResetPasswordForm } from '@/app/_components/auth/reset-password-form';
 
@@ -10,7 +12,9 @@ export default function AuthPasswordResetPage() {
       footerActionText='Back to sign in'
       footerDestination='/auth/sign-in'
     >
-      <ResetPasswordForm />
+      <Suspense>
+        <ResetPasswordForm />
+      </Suspense>
     </FormWrapper>
   );
 }
