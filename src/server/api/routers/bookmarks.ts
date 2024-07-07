@@ -1,11 +1,16 @@
 import { TRPCError } from '@trpc/server';
 
-import { CreateBookmarkSchema, GetBookmarksSchema } from '@/schemas/bookmarks';
+import {
+  CreateBookmarkSchema,
+  GetBookmarksSchema,
+  UpdateBookmarkSchema,
+} from '@/schemas/bookmarks';
 import {
   createBookmark,
   getBookmarkById,
   getChildrenBookmarks,
   getTopLevelBookmarks,
+  updateBookmark,
 } from '@/server/data/bookmarks';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -127,8 +132,55 @@ const getBookmarkWithChilds = protectedProcedure
     return { parentBookmark: bookmarks.value };
   });
 
+const update = protectedProcedure
+  .input(UpdateBookmarkSchema)
+  .mutation(async ({ ctx, input }) => {
+    const validatedFields = UpdateBookmarkSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const { id, title, link } = validatedFields.data;
+
+    const bookmark = await getBookmarkById(id);
+    if (bookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark. Try again later',
+      });
+    }
+
+    if (!bookmark.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: "The bookmark doesn't exist",
+      });
+    }
+
+    const updatedBookmark = await updateBookmark(id, title, link);
+    if (updatedBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark. Try again later',
+      });
+    }
+
+    return {
+      id: updatedBookmark.value.id,
+      type: updatedBookmark.value.type,
+      title: updatedBookmark.value.title,
+      link: updatedBookmark.value.link,
+    };
+  });
+
 export const bookmarksRouter = createTRPCRouter({
   create: create,
   getTopLevel: getTopLevel,
   getBookmarkWithChilds: getBookmarkWithChilds,
+  update: update,
 });
