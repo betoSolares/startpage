@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v8
