@@ -24,10 +24,11 @@ import { BookmarkItem } from './bookmark-item';
 import { CreateBookmark } from './create-bookmark';
 
 interface BookmarksGridProps {
+  parentId?: string;
   bookmarks: Bookmark[];
 }
 
-export function BookmarksGrid({ bookmarks }: BookmarksGridProps) {
+export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
   const [activeName, setActiveName] = useState('');
   const [items, setItems] = useState(bookmarks);
 
@@ -94,7 +95,10 @@ export function BookmarksGrid({ bookmarks }: BookmarksGridProps) {
             )}
           </DragOverlay>
         </SortableContext>
-        <CreateBookmark onCreatedBookmark={handleNewBookmark} />
+        <CreateBookmark
+          parentId={parentId}
+          onCreatedBookmark={handleNewBookmark}
+        />
       </div>
     </DndContext>
   );

@@ -19,7 +19,10 @@ export default async function Page({ params }: PageProps) {
         title={bookmarks.parentBookmark?.title ?? ''}
         goback={bookmarks.parentBookmark?.parentId ?? ''}
       />
-      <BookmarksGrid bookmarks={bookmarks.parentBookmark?.children ?? []} />
+      <BookmarksGrid
+        bookmarks={bookmarks.parentBookmark?.children ?? []}
+        parentId={bookmarks.parentBookmark?.id ?? undefined}
+      />
     </div>
   );
 }
