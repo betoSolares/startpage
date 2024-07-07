@@ -55,7 +55,7 @@ export function ForgotPasswordForm() {
                 <FormLabel className='text-card-foreground'>Email</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={passwordForgetter.isLoading}
+                    disabled={passwordForgetter.isPending}
                     type='email'
                     {...field}
                     required
@@ -69,9 +69,9 @@ export function ForgotPasswordForm() {
         <Button
           type='submit'
           className='w-full'
-          disabled={passwordForgetter.isLoading}
+          disabled={passwordForgetter.isPending}
         >
-          {passwordForgetter.isLoading ? (
+          {passwordForgetter.isPending ? (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           ) : (
             'Send reset instructions'

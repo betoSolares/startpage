@@ -28,3 +28,21 @@ export const getBookmarkById = async (id: string) => {
 
   return result;
 };
+
+export const getTopLevelBookmarks = async (userId: string) => {
+  const result = await fromPromise(
+    db.bookmark.findMany({ where: { userId, parentId: null } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
+
+export const getChildrenBookmarks = async (id: string) => {
+  const result = await fromPromise(
+    db.bookmark.findUnique({ where: { id }, include: { children: true } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};

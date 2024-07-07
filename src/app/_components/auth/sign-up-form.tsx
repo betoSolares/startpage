@@ -58,7 +58,7 @@ export function SignUpForm() {
                 <FormLabel className='text-card-foreground'>Email</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={userCreator.isLoading}
+                    disabled={userCreator.isPending}
                     type='email'
                     {...field}
                     required
@@ -76,7 +76,7 @@ export function SignUpForm() {
                 <FormLabel className='text-card-foreground'>Password</FormLabel>
                 <FormControl>
                   <PasswordInput
-                    disabled={userCreator.isLoading}
+                    disabled={userCreator.isPending}
                     {...field}
                     required
                   />
@@ -95,7 +95,7 @@ export function SignUpForm() {
                 </FormLabel>
                 <FormControl>
                   <PasswordInput
-                    disabled={userCreator.isLoading}
+                    disabled={userCreator.isPending}
                     {...field}
                     required
                   />
@@ -108,9 +108,9 @@ export function SignUpForm() {
         <Button
           type='submit'
           className='w-full'
-          disabled={userCreator.isLoading}
+          disabled={userCreator.isPending}
         >
-          {userCreator.isLoading ? (
+          {userCreator.isPending ? (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           ) : (
             'Sign up'

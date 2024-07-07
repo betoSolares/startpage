@@ -1,19 +1,16 @@
-import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import superjson from 'superjson';
+import { headers } from 'next/headers';
+import { cache } from 'react';
 
-import { AppRouter } from '@/server/api';
+import { createCaller } from '@/server/api';
+import { createTRPCContext } from '@/server/api/trpc';
 
-function getBaseUrl() {
-  if (typeof window !== 'undefined') return '';
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}
+const createContext = cache(() => {
+  const heads = new Headers(headers());
+  heads.set('x-trpc-source', 'rsc');
 
-export function getUrl() {
-  return getBaseUrl() + '/api/trpc';
-}
+  return createTRPCContext({
+    headers: heads,
+  });
+});
 
-export const transformer = superjson;
-
-export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterOutputs<AppRouter>;
+export const api = createCaller(createContext);

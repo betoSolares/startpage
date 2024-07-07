@@ -1,7 +1,6 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Bookmark } from '@prisma/client';
+import { BookmarkPlus, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -10,6 +9,7 @@ import { z } from 'zod';
 import { CreateBookmarkSchema } from '@/schemas/bookmarks';
 
 import { api } from '../trpc-provider';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -39,9 +39,13 @@ import {
 
 interface CreateBookmarkProps {
   parentId?: string;
+  onCreatedBookmark: (bookmark: Bookmark) => void;
 }
 
-export function CreateBookmark({ parentId }: CreateBookmarkProps) {
+export function CreateBookmark({
+  parentId,
+  onCreatedBookmark,
+}: CreateBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
@@ -67,6 +71,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
 
   useEffect(() => {
     if (bookmarkCreator.isSuccess) {
+      onCreatedBookmark(bookmarkCreator.data as Bookmark);
       form.reset();
       setOpen(false);
     }
@@ -80,9 +85,14 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogTrigger asChild>
-        <Button variant='outline'>Create bookmark</Button>
-      </DialogTrigger>
+      <div className='flex w-44 flex-col items-center gap-3'>
+        <DialogTrigger asChild>
+          <div className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-solid border-border bg-card'>
+            <BookmarkPlus className='mt-10 h-8 w-8 items-center text-primary' />
+          </div>
+        </DialogTrigger>
+        <Badge variant='secondary'>Create bookmark</Badge>
+      </div>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Create bookmark</DialogTitle>
@@ -105,7 +115,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        disabled={bookmarkCreator.isLoading}
+                        disabled={bookmarkCreator.isPending}
                       >
                         <FormControl className='col-span-3'>
                           <SelectTrigger>
@@ -136,7 +146,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
                       <FormControl className='col-span-3'>
                         <Input
                           type='text'
-                          disabled={bookmarkCreator.isLoading}
+                          disabled={bookmarkCreator.isPending}
                           {...field}
                           required
                         />
@@ -161,7 +171,7 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
                         <FormControl className='col-span-3'>
                           <Input
                             type='text'
-                            disabled={bookmarkCreator.isLoading}
+                            disabled={bookmarkCreator.isPending}
                             {...field}
                             required
                           />
@@ -176,8 +186,8 @@ export function CreateBookmark({ parentId }: CreateBookmarkProps) {
               )}
             </div>
             <DialogFooter>
-              <Button type='submit' disabled={bookmarkCreator.isLoading}>
-                {bookmarkCreator.isLoading ? (
+              <Button type='submit' disabled={bookmarkCreator.isPending}>
+                {bookmarkCreator.isPending ? (
                   <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 ) : (
                   'Create'
