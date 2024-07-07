@@ -23,9 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        run: npm install --legacy-peer-deps
-
       - name: Run Prisma Migrate
         run: |
           npx prisma generate
