@@ -115,7 +115,7 @@ export function CreateBookmark({
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        disabled={bookmarkCreator.isLoading}
+                        disabled={bookmarkCreator.isPending}
                       >
                         <FormControl className='col-span-3'>
                           <SelectTrigger>
@@ -146,7 +146,7 @@ export function CreateBookmark({
                       <FormControl className='col-span-3'>
                         <Input
                           type='text'
-                          disabled={bookmarkCreator.isLoading}
+                          disabled={bookmarkCreator.isPending}
                           {...field}
                           required
                         />
@@ -171,7 +171,7 @@ export function CreateBookmark({
                         <FormControl className='col-span-3'>
                           <Input
                             type='text'
-                            disabled={bookmarkCreator.isLoading}
+                            disabled={bookmarkCreator.isPending}
                             {...field}
                             required
                           />
@@ -186,8 +186,8 @@ export function CreateBookmark({
               )}
             </div>
             <DialogFooter>
-              <Button type='submit' disabled={bookmarkCreator.isLoading}>
-                {bookmarkCreator.isLoading ? (
+              <Button type='submit' disabled={bookmarkCreator.isPending}>
+                {bookmarkCreator.isPending ? (
                   <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 ) : (
                   'Create'

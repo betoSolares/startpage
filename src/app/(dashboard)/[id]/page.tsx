@@ -1,6 +1,6 @@
 import { BookmarkTitle } from '@/app/_components/bookmarks/bookmark-title';
 import { BookmarksGrid } from '@/app/_components/bookmarks/bookmarks-grid';
-import { api } from '@/lib/trpc-server';
+import { api } from '@/lib/trpc';
 
 interface PageProps {
   params: {
@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  const bookmarks = await api.bookmarks.getBookmarkWithChilds.query({
+  const bookmarks = await api.bookmarks.getBookmarkWithChilds({
     id: params.id,
   });
 

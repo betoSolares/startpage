@@ -63,7 +63,7 @@ export function ResetPasswordForm() {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={passwordResetter.isLoading}
+                    disabled={passwordResetter.isPending}
                     type='password'
                     {...field}
                     required
@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={passwordResetter.isLoading}
+                    disabled={passwordResetter.isPending}
                     type='password'
                     {...field}
                     required
@@ -97,9 +97,9 @@ export function ResetPasswordForm() {
         <Button
           type='submit'
           className='w-full'
-          disabled={passwordResetter.isLoading}
+          disabled={passwordResetter.isPending}
         >
-          {passwordResetter.isLoading ? (
+          {passwordResetter.isPending ? (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           ) : (
             'Reset password'
