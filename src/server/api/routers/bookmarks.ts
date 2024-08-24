@@ -161,6 +161,15 @@ const update = protectedProcedure
       });
     }
 
+    const { userId } = bookmark.value;
+
+    if (userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'No access to this bookmark',
+      });
+    }
+
     const updatedBookmark = await updateBookmark(id, title, link);
     if (updatedBookmark.isErr()) {
       throw new TRPCError({
