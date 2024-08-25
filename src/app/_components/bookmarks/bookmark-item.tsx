@@ -16,6 +16,7 @@ interface BookmarkItemProps {
   title: string;
   link: string | null;
   onUpdatedBookmark: (Bookmark: Bookmark) => void;
+  onDeleteBookmark: (id: string) => void;
 }
 
 export function BookmarkItem({
@@ -24,6 +25,7 @@ export function BookmarkItem({
   title,
   link,
   onUpdatedBookmark,
+  onDeleteBookmark,
 }: BookmarkItemProps) {
   const {
     attributes,
@@ -36,10 +38,6 @@ export function BookmarkItem({
 
   const sanatizeURL = (url: string) => {
     return new URL(url.startsWith('http') ? url : `https://${url}`);
-  };
-
-  const handleUpdatedBookmark = (bookmark: Bookmark) => {
-    onUpdatedBookmark(bookmark);
   };
 
   return (
@@ -68,9 +66,9 @@ export function BookmarkItem({
             <EditBookmark
               id={id}
               type={type}
-              onUpdatedBookmark={handleUpdatedBookmark}
+              onUpdatedBookmark={onUpdatedBookmark}
             />
-            <DeleteBookmark id={id} />
+            <DeleteBookmark id={id} onDeleteBookmark={onDeleteBookmark} />
           </div>
         </div>
         <div className='flex-grow'>

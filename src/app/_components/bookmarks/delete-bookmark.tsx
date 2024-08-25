@@ -17,9 +17,10 @@ import {
 
 interface DeleteBookmarkProps {
   id: string;
+  onDeleteBookmark: (id: string) => void;
 }
 
-export function DeleteBookmark({ id }: DeleteBookmarkProps) {
+export function DeleteBookmark({ id, onDeleteBookmark }: DeleteBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
@@ -34,6 +35,7 @@ export function DeleteBookmark({ id }: DeleteBookmarkProps) {
 
   useEffect(() => {
     if (bookmarkRemover.isSuccess) {
+      onDeleteBookmark(bookmarkRemover.data.id);
       setOpen(false);
     }
 
