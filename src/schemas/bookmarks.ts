@@ -76,3 +76,7 @@ export const UpdateBookmarkSchema = z
 
     return values;
   });
+
+export const DeleteBookmarkSchema = z.object({
+  id: z.string().cuid(),
+});
