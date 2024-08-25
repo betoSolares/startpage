@@ -46,3 +46,16 @@ export const getChildrenBookmarks = async (id: string) => {
 
   return result;
 };
+
+export const updateBookmark = async (
+  id: string,
+  title: string,
+  link: string | undefined
+) => {
+  const result = await fromPromise(
+    db.bookmark.update({ where: { id }, data: { title: title, link: link } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};

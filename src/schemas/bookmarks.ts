@@ -45,3 +45,34 @@ export const CreateBookmarkSchema = z
 export const GetBookmarksSchema = z.object({
   id: z.string().cuid(),
 });
+
+export const UpdateBookmarkSchema = z
+  .object({
+    id: z.string().cuid(),
+    type: z.nativeEnum(BookmarkType),
+    title: z.string().trim().min(1),
+    link: z.string().optional(),
+  })
+  .refine(
+    (values) => {
+      if (
+        values.type === 'Link' &&
+        (values.link === undefined || !urlValidation.test(values.link))
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message: 'Invalid link',
+      path: ['link'],
+    }
+  )
+  .transform((values) => {
+    if (values.type === 'Directory') {
+      values.link = undefined;
+    }
+
+    return values;
+  });

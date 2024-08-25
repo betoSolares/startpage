@@ -1,21 +1,29 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { BookmarkType } from '@prisma/client';
-import { FolderOpen, Move, Pencil, Trash } from 'lucide-react';
+import { Bookmark, BookmarkType } from '@prisma/client';
+import { FolderOpen, Move, Trash } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { BookmarkImage } from './bookmark-image';
+import { EditBookmark } from './edit-bookmark';
 
 interface BookmarkItemProps {
   id: string;
   type: BookmarkType;
   title: string;
   link: string | null;
+  onUpdatedBookmark: (Bookmark: Bookmark) => void;
 }
 
-export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
+export function BookmarkItem({
+  id,
+  type,
+  title,
+  link,
+  onUpdatedBookmark,
+}: BookmarkItemProps) {
   const {
     attributes,
     listeners,
@@ -27,6 +35,10 @@ export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
 
   const sanatizeURL = (url: string) => {
     return new URL(url.startsWith('http') ? url : `https://${url}`);
+  };
+
+  const handleUpdatedBookmark = (bookmark: Bookmark) => {
+    onUpdatedBookmark(bookmark);
   };
 
   return (
@@ -52,9 +64,11 @@ export function BookmarkItem({ id, type, title, link }: BookmarkItemProps) {
             <Move className='h-4 w-4' />
           </Button>
           <div className='float-right flex gap-1'>
-            <Button variant='outline' size='icon'>
-              <Pencil className='h-4 w-4' />
-            </Button>
+            <EditBookmark
+              id={id}
+              type={type}
+              onUpdatedBookmark={handleUpdatedBookmark}
+            />
             <Button variant='outline' size='icon'>
               <Trash className='h-4 w-4' />
             </Button>
