@@ -2,11 +2,13 @@ import { TRPCError } from '@trpc/server';
 
 import {
   CreateBookmarkSchema,
+  DeleteBookmarkSchema,
   GetBookmarksSchema,
   UpdateBookmarkSchema,
 } from '@/schemas/bookmarks';
 import {
   createBookmark,
+  deleteBookmark,
   getBookmarkById,
   getChildrenBookmarks,
   getTopLevelBookmarks,
@@ -187,9 +189,62 @@ const update = protectedProcedure
     };
   });
 
+const remove = protectedProcedure
+  .input(DeleteBookmarkSchema)
+  .mutation(async ({ ctx, input }) => {
+    const validatedFields = DeleteBookmarkSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const { id } = validatedFields.data;
+
+    const bookmark = await getBookmarkById(id);
+    if (bookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred deleting the bookmark. Try again later',
+      });
+    }
+
+    if (!bookmark.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: "The bookmark doesn't exist",
+      });
+    }
+
+    const { userId } = bookmark.value;
+
+    if (userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'No access to this bookmark',
+      });
+    }
+
+    const deletedBookmark = await deleteBookmark(id);
+    if (deletedBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred deleting the bookmark. Try again later',
+      });
+    }
+
+    return {
+      id: deletedBookmark.value.id,
+    };
+  });
+
 export const bookmarksRouter = createTRPCRouter({
   create: create,
   getTopLevel: getTopLevel,
   getBookmarkWithChilds: getBookmarkWithChilds,
   update: update,
+  remove: remove,
 });
