@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BookmarkType } from '@prisma/client';
+import { Bookmark, BookmarkType } from '@prisma/client';
 import { Loader2, Pencil } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -32,9 +32,14 @@ import { Input } from '../ui/input';
 interface EditBookmarkProps {
   id: string;
   type: BookmarkType;
+  onUpdatedBookmark: (Bookmark: Bookmark) => void;
 }
 
-export function EditBookmark({ id, type }: EditBookmarkProps) {
+export function EditBookmark({
+  id,
+  type,
+  onUpdatedBookmark,
+}: EditBookmarkProps) {
   const [open, setOpen] = useState(false);
 
   const handleDialogChange = () => {
@@ -60,6 +65,7 @@ export function EditBookmark({ id, type }: EditBookmarkProps) {
 
   useEffect(() => {
     if (bookmarkUpdater.isSuccess) {
+      onUpdatedBookmark(bookmarkUpdater.data as Bookmark);
       form.reset();
       setOpen(false);
     }

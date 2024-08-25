@@ -64,6 +64,13 @@ export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
     setItems(newItems);
   };
 
+  const handleUpdatedBookmark = (bookmark: Bookmark) => {
+    const newItems = [...items];
+    const index = newItems.findIndex((item) => item.id === bookmark.id);
+    newItems[index] = bookmark;
+    setItems(newItems);
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -83,6 +90,7 @@ export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
               type={bookmark.type}
               title={bookmark.title}
               link={bookmark.link}
+              onUpdatedBookmark={handleUpdatedBookmark}
             />
           ))}
           <DragOverlay>
