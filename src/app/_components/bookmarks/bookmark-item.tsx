@@ -1,12 +1,13 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Bookmark, BookmarkType } from '@prisma/client';
-import { FolderOpen, Move, Trash } from 'lucide-react';
+import { FolderOpen, Move } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { BookmarkImage } from './bookmark-image';
+import { DeleteBookmark } from './delete-bookmark';
 import { EditBookmark } from './edit-bookmark';
 
 interface BookmarkItemProps {
@@ -69,9 +70,7 @@ export function BookmarkItem({
               type={type}
               onUpdatedBookmark={handleUpdatedBookmark}
             />
-            <Button variant='outline' size='icon'>
-              <Trash className='h-4 w-4' />
-            </Button>
+            <DeleteBookmark id={id} />
           </div>
         </div>
         <div className='flex-grow'>
