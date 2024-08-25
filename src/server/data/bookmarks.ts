@@ -59,3 +59,12 @@ export const updateBookmark = async (
 
   return result;
 };
+
+export const deleteBookmark = async (id: string) => {
+  const result = await fromPromise(
+    db.bookmark.delete({ where: { id } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
