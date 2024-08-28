@@ -52,7 +52,7 @@ export function SignInForm() {
 
     if (result.error === 'CredentialsSignin') {
       setError('Invalid email or password');
-    } else if (result.error === 'AuthorizedCallbackError') {
+    } else if (result.error === 'AccessDenied') {
       setSuccess(
         `We resent the confirmation email. Click the link in the email to verify your account`
       );
