@@ -10,10 +10,13 @@ export const createBookmark = async (
   title: string,
   userId: string,
   link: string | undefined,
-  parentId: string | undefined
+  parentId: string | undefined,
+  order: string
 ) => {
   const result = await fromPromise(
-    db.bookmark.create({ data: { type, title, userId, link, parentId } }),
+    db.bookmark.create({
+      data: { type, title, userId, link, parentId, order },
+    }),
     (e) => new PrismaError(e)
   );
 
@@ -31,7 +34,10 @@ export const getBookmarkById = async (id: string) => {
 
 export const getTopLevelBookmarks = async (userId: string) => {
   const result = await fromPromise(
-    db.bookmark.findMany({ where: { userId, parentId: null } }),
+    db.bookmark.findMany({
+      where: { userId, parentId: null },
+      orderBy: { order: 'asc' },
+    }),
     (e) => new PrismaError(e)
   );
 
@@ -40,7 +46,10 @@ export const getTopLevelBookmarks = async (userId: string) => {
 
 export const getChildrenBookmarks = async (id: string) => {
   const result = await fromPromise(
-    db.bookmark.findUnique({ where: { id }, include: { children: true } }),
+    db.bookmark.findUnique({
+      where: { id },
+      include: { children: { orderBy: { order: 'asc' } } },
+    }),
     (e) => new PrismaError(e)
   );
 
@@ -63,6 +72,35 @@ export const updateBookmark = async (
 export const deleteBookmark = async (id: string) => {
   const result = await fromPromise(
     db.bookmark.delete({ where: { id } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
+
+export const getLastBookmark = async (
+  parentId: string | undefined,
+  userId: string
+) => {
+  if (parentId !== undefined) {
+    parentId = parentId;
+  }
+
+  const result = await fromPromise(
+    db.bookmark.findMany({
+      where: { AND: [{ parentId }, { userId }] },
+      orderBy: { order: 'desc' },
+      take: 1,
+    }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
+
+export const updateBookmarkOrder = async (id: string, order: string) => {
+  const result = await fromPromise(
+    db.bookmark.update({ where: { id }, data: { order } }),
     (e) => new PrismaError(e)
   );
 

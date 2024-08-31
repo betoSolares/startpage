@@ -18,8 +18,10 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 import { Bookmark } from '@prisma/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
+import { api } from '../trpc-provider';
 import { BookmarkItem } from './bookmark-item';
 import { CreateBookmark } from './create-bookmark';
 
@@ -31,6 +33,8 @@ interface BookmarksGridProps {
 export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
   const [activeName, setActiveName] = useState('');
   const [items, setItems] = useState(bookmarks);
+
+  const bookmarkOrderUpdater = api.bookmarks.updateOrder.useMutation();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -50,10 +54,21 @@ export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over?.id);
-        return arrayMove(items, oldIndex, newIndex);
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over?.id);
+      const newItems = arrayMove(items, oldIndex, newIndex);
+
+      setItems(newItems);
+
+      const currentIndex = newItems.findIndex((item) => item.id === active.id);
+      const prev = newItems[currentIndex - 1];
+      const current = newItems[currentIndex];
+      const next = newItems[currentIndex + 1];
+
+      bookmarkOrderUpdater.mutate({
+        currentId: current?.id ?? '',
+        prevId: prev?.id,
+        nextId: next?.id,
       });
     }
   };
@@ -77,6 +92,14 @@ export function BookmarksGrid({ parentId, bookmarks }: BookmarksGridProps) {
     newItems.splice(index, 1);
     setItems(newItems);
   };
+
+  useEffect(() => {
+    if (bookmarkOrderUpdater.isError) {
+      toast.error(bookmarkOrderUpdater.error.message, {
+        description: 'Failed to update bookmarks order',
+      });
+    }
+  }, [bookmarkOrderUpdater.isError]);
 
   return (
     <DndContext

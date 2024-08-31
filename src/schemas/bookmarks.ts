@@ -80,3 +80,9 @@ export const UpdateBookmarkSchema = z
 export const DeleteBookmarkSchema = z.object({
   id: z.string().cuid(),
 });
+
+export const UpdateBookmarkOrderSchema = z.object({
+  currentId: z.string().cuid(),
+  prevId: z.string().cuid().optional(),
+  nextId: z.string().cuid().optional(),
+});
