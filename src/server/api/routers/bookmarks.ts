@@ -5,6 +5,7 @@ import {
   CreateBookmarkSchema,
   DeleteBookmarkSchema,
   GetBookmarksSchema,
+  UpdateBookmarkOrderSchema,
   UpdateBookmarkSchema,
 } from '@/schemas/bookmarks';
 import {
@@ -15,6 +16,7 @@ import {
   getLastBookmark,
   getTopLevelBookmarks,
   updateBookmark,
+  updateBookmarkOrder,
 } from '@/server/data/bookmarks';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -71,8 +73,9 @@ const create = protectedProcedure
     }
 
     if (lastBookmark.value.length !== 0) {
-      const lastOrder = LexoRank.parse(lastBookmark.value[0]?.order as string);
-      order = lastOrder.genNext().format();
+      const lastOrder = lastBookmark.value.at(0)?.order;
+      const lastOrderParsed = LexoRank.parse(lastOrder!);
+      order = lastOrderParsed.genNext().format();
     }
 
     const createdBookmark = await createBookmark(
@@ -260,10 +263,136 @@ const remove = protectedProcedure
     };
   });
 
+const updateOrder = protectedProcedure
+  .input(UpdateBookmarkOrderSchema)
+  .mutation(async ({ ctx, input }) => {
+    const validatedFields = UpdateBookmarkOrderSchema.safeParse(input);
+    if (!validatedFields.success) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to validate input',
+      });
+    }
+
+    const { currentId, prevId, nextId } = validatedFields.data;
+
+    const currentBookmark = await getBookmarkById(currentId);
+    if (currentBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark order. Try again later',
+      });
+    }
+
+    if (!currentBookmark.value) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: "The bookmark doesn't exist",
+      });
+    }
+
+    if (currentBookmark.value.userId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'No access to this bookmark',
+      });
+    }
+
+    const prevBookmark = await getBookmarkById(prevId ?? '');
+    if (prevBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark order. Try again later',
+      });
+    }
+
+    const nextBookmark = await getBookmarkById(nextId ?? '');
+    if (nextBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark order. Try again later',
+      });
+    }
+
+    let order = '';
+
+    if (!prevBookmark.value && !nextBookmark.value) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark order. Try again later',
+      });
+    }
+
+    if (!prevBookmark.value) {
+      if (nextBookmark.value?.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'No access to this bookmark',
+        });
+      }
+
+      const nextOrder: string = nextBookmark.value.order;
+      const nextOrderParsed = LexoRank.parse(nextOrder);
+      order = nextOrderParsed.genPrev().format();
+    }
+
+    if (!nextBookmark.value) {
+      if (prevBookmark.value?.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'No access to this bookmark',
+        });
+      }
+
+      const prevOrder = prevBookmark.value.order;
+      const prevOrderParsed = LexoRank.parse(prevOrder);
+      order = prevOrderParsed.genNext().format();
+    }
+
+    if (prevBookmark.value && nextBookmark.value) {
+      if (
+        prevBookmark.value.userId !== ctx.session.user.id ||
+        nextBookmark.value.userId !== ctx.session.user.id
+      ) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'No access to this bookmark',
+        });
+      }
+
+      const prevOrder = prevBookmark.value.order;
+      const prevOrderParsed = LexoRank.parse(prevOrder);
+
+      const nextOrder = nextBookmark.value.order;
+      const nextOrderParsed = LexoRank.parse(nextOrder);
+
+      order = prevOrderParsed.between(nextOrderParsed).format();
+    }
+
+    const updatedBookmark = await updateBookmarkOrder(currentId, order);
+    if (updatedBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred updating the bookmark order. Try again later',
+      });
+    }
+
+    return {
+      id: updatedBookmark.value.id,
+      order: updatedBookmark.value.order,
+    };
+  });
+
 export const bookmarksRouter = createTRPCRouter({
   create: create,
   getTopLevel: getTopLevel,
   getBookmarkWithChilds: getBookmarkWithChilds,
   update: update,
   remove: remove,
+  updateOrder: updateOrder,
 });
