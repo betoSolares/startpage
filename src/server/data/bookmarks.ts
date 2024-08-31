@@ -10,10 +10,13 @@ export const createBookmark = async (
   title: string,
   userId: string,
   link: string | undefined,
-  parentId: string | undefined
+  parentId: string | undefined,
+  order: string
 ) => {
   const result = await fromPromise(
-    db.bookmark.create({ data: { type, title, userId, link, parentId } }),
+    db.bookmark.create({
+      data: { type, title, userId, link, parentId, order },
+    }),
     (e) => new PrismaError(e)
   );
 
@@ -31,7 +34,10 @@ export const getBookmarkById = async (id: string) => {
 
 export const getTopLevelBookmarks = async (userId: string) => {
   const result = await fromPromise(
-    db.bookmark.findMany({ where: { userId, parentId: null } }),
+    db.bookmark.findMany({
+      where: { userId, parentId: null },
+      orderBy: { order: 'asc' },
+    }),
     (e) => new PrismaError(e)
   );
 
@@ -40,7 +46,10 @@ export const getTopLevelBookmarks = async (userId: string) => {
 
 export const getChildrenBookmarks = async (id: string) => {
   const result = await fromPromise(
-    db.bookmark.findUnique({ where: { id }, include: { children: true } }),
+    db.bookmark.findUnique({
+      where: { id },
+      include: { children: { orderBy: { order: 'asc' } } },
+    }),
     (e) => new PrismaError(e)
   );
 

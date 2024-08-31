@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { LexoRank } from 'lexorank';
 
 import {
   CreateBookmarkSchema,
@@ -29,6 +30,7 @@ const create = protectedProcedure
     }
 
     const { type, title, link, parentId } = validatedFields.data;
+    const order = LexoRank.middle().format();
 
     const parentBookmark = await getBookmarkById(parentId ?? '');
     if (parentBookmark.isErr()) {
@@ -62,7 +64,8 @@ const create = protectedProcedure
       title,
       ctx.session.user.id,
       link,
-      parentId
+      parentId,
+      order
     );
     if (createdBookmark.isErr()) {
       throw new TRPCError({
