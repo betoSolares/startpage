@@ -77,3 +77,23 @@ export const deleteBookmark = async (id: string) => {
 
   return result;
 };
+
+export const getLastBookmark = async (
+  parentId: string | undefined,
+  userId: string
+) => {
+  if (parentId !== undefined) {
+    parentId = parentId;
+  }
+
+  const result = await fromPromise(
+    db.bookmark.findMany({
+      where: { AND: [{ parentId }, { userId }] },
+      orderBy: { order: 'desc' },
+      take: 1,
+    }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};

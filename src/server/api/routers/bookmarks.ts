@@ -12,6 +12,7 @@ import {
   deleteBookmark,
   getBookmarkById,
   getChildrenBookmarks,
+  getLastBookmark,
   getTopLevelBookmarks,
   updateBookmark,
 } from '@/server/data/bookmarks';
@@ -30,7 +31,8 @@ const create = protectedProcedure
     }
 
     const { type, title, link, parentId } = validatedFields.data;
-    const order = LexoRank.middle().format();
+
+    let order = LexoRank.middle().format();
 
     const parentBookmark = await getBookmarkById(parentId ?? '');
     if (parentBookmark.isErr()) {
@@ -57,6 +59,20 @@ const create = protectedProcedure
           message: 'Only directories can have children',
         });
       }
+    }
+
+    const lastBookmark = await getLastBookmark(parentId, ctx.session.user.id);
+    if (lastBookmark.isErr()) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message:
+          'An unexpected error occurred creating the bookmark. Try again later',
+      });
+    }
+
+    if (lastBookmark.value.length !== 0) {
+      const lastOrder = LexoRank.parse(lastBookmark.value[0]?.order as string);
+      order = lastOrder.genNext().format();
     }
 
     const createdBookmark = await createBookmark(
