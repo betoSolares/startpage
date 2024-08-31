@@ -97,3 +97,12 @@ export const getLastBookmark = async (
 
   return result;
 };
+
+export const updateBookmarkOrder = async (id: string, order: string) => {
+  const result = await fromPromise(
+    db.bookmark.update({ where: { id }, data: { order } }),
+    (e) => new PrismaError(e)
+  );
+
+  return result;
+};
