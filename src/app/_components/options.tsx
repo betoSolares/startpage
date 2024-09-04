@@ -41,7 +41,7 @@ export function Options() {
         <DropdownMenuGroup>
           {session.status === 'authenticated' && (
             <DropdownMenuItem asChild>
-              <Link href='/settings'>
+              <Link href='/settings/account'>
                 <Settings className='mr-2 h-4 w-4' />
                 <span>Settings</span>
               </Link>
