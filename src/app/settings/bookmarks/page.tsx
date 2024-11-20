@@ -1,3 +1,4 @@
+import { ImportBookmark } from '@/app/_components/settings/import-bookmark';
 import { Button } from '@/app/_components/ui/button';
 
 export default async function Page() {
@@ -17,9 +18,7 @@ export default async function Page() {
                 Bring your bookmarks from other places.
               </p>
             </div>
-            <Button variant='link' size='lg' className='text-foreground'>
-              <p className='font-semibold'>Import</p>
-            </Button>
+            <ImportBookmark />
           </section>
           <section className='flex flex-row items-start justify-between gap-4 py-2'>
             <div className='flex flex-grow flex-col'>
