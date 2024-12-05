@@ -65,5 +65,5 @@ declare module 'netscape-bookmark-tree' {
     options?: Partial<DefaultOptions['stringify']>
   ): string[];
 
-  export { parse, stringify, DefaultOptions };
+  export { parse, stringify, DefaultOptions, BookmarkNode };
 }
